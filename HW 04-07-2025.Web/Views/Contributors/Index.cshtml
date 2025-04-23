@@ -1,0 +1,145 @@
+﻿@using HW_04_07_2025.Data
+@model ContributorModel 
+<div class="container">
+
+    @if (!String.IsNullOrEmpty(Model.Message))
+    {
+        <div class="col-md-12">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @Model.Message
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+
+    <h1>Contributors</h1>
+    <div class="row">
+        <button class="btn btn-outline-success" id="new-contributor">New Contributor</button>
+        <input type="text" class="form-control" placeholder="Search" id="search" />
+        <button class="btn btn-dark" id="clear">Clear</button>
+        <h4>Total: @Model.Total.ToString("C")</h4>
+    </div>
+    <div class="table-responsive"></div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Deposit</th>
+                <th>Name</th>
+                <th>Cell</th>
+                <th>Balance</th>
+                <th>Always Include</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (Contributor c in Model.Contributors)
+            {
+                <tr>
+                    <td><button class="btn btn-danger deposit-button data-contribid= @c.Id" data-contribname="@c.First @c.Last">Deposit</button></td>
+                    <td class="name-cell">@c.First @c.Last</td>
+                    <td>@c.Cell</td>
+                    <td>@c.Balance.ToString("C")</td>
+                    <td>
+                        @if (c.AlwaysInclude)
+                        {
+                            <i class="bi bi-check"></i>
+                        }
+                    </td>
+                    <td> 
+                        <a href="/contributors/history?contribid=@c.Id" class="btn btn-Success">Show History</a>
+                        <button data-first-name="@c.First" data-last-name="@c.Last"
+                                data-cell="@c.Cell" data-id="@c.Id" data-always-include="@c.AlwaysInclude" data-date="@c.Date.ToString("yyyy-MM-dd")"
+                                class="btn btn-danger edit-contrib">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="modal new-contrib" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Contributor</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="/Contributors/new">
+
+                    <div class="modal-body">
+                        <div class="form-group col-md-5">
+                            <label class="form-label">First Name</label>
+                            <input class="form-control" id="fn" name="FirstName" placeholder="First Name" type="text" />
+                        </div>
+
+                        <div class="form-group col-md-5">
+                            <label class="form-label">Last Name</label>
+                            <input class="form-control" id="ln" name="LastName" placeholder="Last Name" type="text" />
+                        </div>
+
+                        <div class="form-group col-md-5">
+                            <label class="form-label">Cell Number</label>
+                            <input class="form-control" id="Cell" name="cellNumber" placeholder="Cell Number" type="text" />
+                        </div>
+
+                        <div class="form-group col-md-5" id="deposit">
+                            <label class="form-label">Initial Deposit</label>
+                            <input class="form-control" name="initialDeposit" placeholder="Initial Deposit" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-5">
+                        <label class="form-label">Created Date</label>
+                        <input class="form-control" id="date" name="dateCreated" placeholder="Date" type="date" />
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" id="always_include" name="alwaysInclude" value="true" type="checkbox" />
+                        <label class="form-check-label" for="always_include_contrib">Always Include</label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal deposit" tabindex="-1" role="dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    "Deposit For "
+                    <span id="deposit-name"></span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="/contributors/deposit">
+                <input type="hidden" name="contributorId" id="hidden" />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input class="form-control" name="amount" placeholder="Amount" type="text" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input class="form-control" id="datepicker" name="date" type="date" />
+                    </div> 
+                </div> 
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="/js/contributor-index.js"></script>
+}

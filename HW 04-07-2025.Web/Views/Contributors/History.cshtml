@@ -1,0 +1,34 @@
+﻿@using HW_04_07_2025.Data
+ @model HistoryModel
+
+<div class="container">
+    <div class="header">
+        <h2>History for @Model.Name</h2>
+        <h4>Balance @Model.Balance.ToString("C")</h4>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Date</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Transactions trans in Model.Transactions)
+            {
+                <tr>
+                    <td>
+                        @(trans.Action == "Deposit" ? "Deposit" : $"Contribution for {trans.Action} simcha")
+                    </td>
+                    <td>@trans.Date.ToLongDateString</td>
+                    <td>@trans.Amount.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <a class="btn btn-info" href="/contributors">Back to Contributors</a>
+    </div>
+</div>
